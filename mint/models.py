@@ -3,7 +3,7 @@ from django.utils import timezone
 
 # Create your models here.
 class Upload(models.Model):
-    image = models.ImageField(upload_to='post_images')
+    image = models.ImageField(upload_to='img', blank =True)
     metadata = models.TextField()
 
 class NFT(models.Model):
