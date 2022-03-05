@@ -3,10 +3,25 @@ import React from 'react';
 import axios from 'axios';
 
 
+function Response(props) {
+  const responseMsg = props.responseMsg;
+  return (
+    <div>
+      {responseMsg &&
+        <h2>
+          Response {responseMsg}.
+        </h2>
+      }
+    </div>
+  );
+}
+
 function App() {
   const [imgTitle, setImgTitle] = React.useState('');
   const [textTitle, setTextTitle] = React.useState('');
   const [imgState, setImgState] = React.useState('');
+  const [msgs, setMsgs] = React.useState('');
+
 
 
   const handleImageChange = (event) => {
@@ -39,7 +54,11 @@ function App() {
     // form_data.append('metadata', {
     //   "Serial Number" : "textTitle",
     // });
-    form_data.append('metadata', "sample metadata");
+    let metadata = "{"
+      + "\"Serial Number\": \"serial\""
+    +"}";
+
+    form_data.append('metadata', metadata);
     form_data.append('Serial Number', textTitle);
     form_data.append('image', imgTitle, imgTitle.name);
     //form_data.append('content', this.state.content);
@@ -51,8 +70,14 @@ function App() {
       })
           .then(res => {
             console.log(res.data);
+            setMsgs('succeeded');
+            // send to next webpage, call by url
+
           })
-          .catch(err => console.log(err))
+          .catch(err => {
+            console.log(err);
+            setMsgs('failed');
+          })
     };
 
   return (
@@ -65,7 +90,9 @@ function App() {
         <input type="submit" value="Submit"/>
         
       </form>
+      <Response responseMsg={msgs} />
       <img src={imgState} id="img-change" width='300'/>
+
     </div>
   );
 }
