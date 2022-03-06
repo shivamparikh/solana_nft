@@ -16,7 +16,98 @@ function Response(props) {
   );
 }
 
-function App() {
+function DisplayNFTs() {
+  const [photos, setPhotos] = React.useState([]);
+  // const photos = [];
+
+  
+
+  const onClick = () => {
+    // setPhotos([{'id': 'id1', 'name': 'name1'}])
+
+    fetch("http://127.0.0.1:8000/mint/uploads",
+    {
+      method: 'GET',
+
+    }).then(response => response.json())
+      .then(
+        (data) => {
+          console.log(data);
+          console.log(data[1]);
+          console.log("Reached 2");
+
+          let ls = [];
+          console.log(Object.keys(data));
+          Object.keys(data).forEach(e => {
+            let val = data[e];
+            console.log(data[e]);
+            console.log("img: " + val.image);
+            //console.log(URL.createObjectURL(new Blob(val.image, {type: "image/png"})));
+            //URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}))
+
+            if (val.image) {
+              console.log("jj: " + val);
+              // let imgURL = val.image;
+              // console.log("imgURL: " + imgURL);
+              ls.push({'id': val.id, 'metadata': val.metadata, 'image' : val.image});
+            }
+              //console.log("dd" + val);
+
+            // let imgURL = URL.createObjectURL(val.image);
+
+            // let imgURL = "";
+            // if (val.image.url == null) {
+              // imgURL = val.image;
+            // }
+            // ls.push({'id': val.id, 'metadata': val.metadata, 'image' : imgURL});//'image': URL.createObjectURL(val.image)});
+
+          });
+          
+          // let ls = [];
+          // data.array.forEach(e => {console.log("id: " + e));
+            
+            
+            // ls.push({'id': e, 'metadata': 'yolo'});
+          //});
+          setPhotos(ls);
+          // return result;
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          console.log("Reached error")
+          // return error;
+        }
+      );
+    // console.log("")
+    
+    // setPhotos( photos => [...photos, `${photos.length}`]);
+
+
+  };
+
+  return (
+    <div className="myDiv">
+      <h1>NFTs Available</h1>
+      <input type="button" onClick={ onClick } value="Update" />
+      <div>
+      {photos.length > 0 && (
+        <ul>
+          {photos.map(photo => (
+            <li key={photo.id}>{photo.metadata}
+            <img src={photo.image} />
+            </li>
+            
+          ))}
+        </ul>
+      )}
+    </div>
+    </div>
+  );
+}
+
+function Intake(props) {
   const [imgTitle, setImgTitle] = React.useState('');
   const [textTitle, setTextTitle] = React.useState('');
   const [imgState, setImgState] = React.useState('');
@@ -72,6 +163,7 @@ function App() {
             console.log(res.data);
             setMsgs('succeeded');
             // send to next webpage, call by url
+            props.onIntake("succeeded");
 
           })
           .catch(err => {
@@ -93,6 +185,29 @@ function App() {
       <Response responseMsg={msgs} />
       <img src={imgState} id="img-change" width='300'/>
 
+    </div>
+  );
+}
+
+function App(props) {
+
+  const [showIntake, setShowIntake] = React.useState(true); //Setting this to False for now
+
+  const handleIntake = (text) => {
+    console.log("text: " + text);
+    if (text === "succeeded") {
+      setShowIntake(false)
+    }
+  };
+
+  return (
+    <div>
+    {showIntake &&
+      <Intake onIntake={handleIntake}/>
+    }
+    {!showIntake &&
+      <DisplayNFTs />
+    }
     </div>
   );
 }

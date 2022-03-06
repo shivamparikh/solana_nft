@@ -38,6 +38,7 @@ class UploadView(APIView):
         upload_serializer = UploadSerializer(data=request.data)
         if upload_serializer.is_valid():
             upload_serializer.save()
+            ## init nft method async
             return Response(upload_serializer.data, status=status.HTTP_201_CREATED)
         else:
             print('error', upload_serializer.errors)
