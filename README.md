@@ -23,6 +23,10 @@ http://127.0.0.1:8000/mint/uploads/
 `cd creation-ui`
 `npm start`
 
+### Database
+`python manage.py dbshell`
+`.tables`
+`select * from mint_upload`
 
 Access Django Admin:
 http://127.0.0.1:8000/admin/
