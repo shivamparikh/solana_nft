@@ -30,8 +30,8 @@ def mint_nft(request, **kwargs):
     api = MetaplexAPI(cfg)
     result = api.deploy(api_endpoint, title, symbol, percent)
     contract_key = json.loads(result).get('contract')
-    mint_res = api.mint(api_endpoint, contract_key, PUBLIC_KEY, url+json_path)
-    
+    mint_res = api.mint(api_endpoint, contract_key, cfg["PUBLIC_KEY"], url+json_path)
+
 class UploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
