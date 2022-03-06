@@ -5,11 +5,33 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
+from metaplex.api.metaplex_api import MetaplexAPI
+from solana.rpc.api import Client
+from solana.keypair import Keypair
+
 import json
 
 # Create your views here.
-def index(request):
-    pass
+def mint_nft(request, **kwargs):
+    api_endpoint = "https://api.testnet.solana.com/"
+    recipient_wallet = kwargs['recipient']
+    title = kwargs['title']
+    date_minted = kwargs['date']
+    hash = '12345678920908'
+    symbol = 'ABCDEFG'
+    percent = 1000
+    url = "http://www.sparikh.me/"
+    write_args_to_json = lambda x : json.dumps({"hello":"world"}) # Replace this with a function call to write arguments into a json file, return the url to the json file.
+    json_path = f'src/json/{hash}.json'
+    with open(json_path, 'w') as f:
+        json.dump(write_args_to_json(None), f)
+    account = Keypair()
+    cfg = {"PRIVATE_KEY": base58.b58encode(account.seed).decode("ascii"), "PUBLIC_KEY": str(account.public_key), "DECRYPTION_KEY": Fernet.generate_key().decode("ascii")}
+    api = MetaplexAPI(cfg)
+    result = api.deploy(api_endpoint, title, symbol, percent)
+    contract_key = json.loads(result).get('contract')
+    mint_res = api.mint(api_endpoint, contract_key, PUBLIC_KEY, url+json_path)
+    
 class UploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
